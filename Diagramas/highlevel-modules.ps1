@@ -1,0 +1,42 @@
+@startuml
+!theme mars
+
+title 'Energy Efficiency: Recommender System for Appliance Usage' High-level Architectural Overview
+
+package "Mobile Front-End Application" {
+   [Front-end logic]
+}
+
+package "Back-end" {
+  [Back-end logic]
+}
+
+cloud "Energy Data Service" {
+  [Energy mix and prices data]
+}
+
+cloud "Appliances Data Service" {
+  [Appliances and Categories data]
+}
+
+package "Integrator Link" {
+   [Integrator link logic]
+}
+
+component "Device" {
+  [Get Energy Usage]
+}
+
+cloud "Device Credentials Service" {
+  [Retrieve Token]
+}
+
+[Front-end logic] <-u-> [Back-end logic] : HTTPS
+[Integrator link logic] <-d-> [Back-end logic] : HTTPS
+[Appliances and Categories data] <-d- [Back-end logic] : HTTPS
+[Energy mix and prices data] <-d- [Back-end logic] : HTTPS
+[Retrieve Token] <-r- [Back-end logic] : HTTPS
+[Retrieve Token] <-d- [Integrator link logic]: HTTPS
+[Get Energy Usage] <-d- [Integrator link logic] : Propietary Network HTTPS
+
+@enduml

@@ -1,0 +1,135 @@
+@startuml
+!theme plain
+package "Mobile Front-End Application" {
+   package "Appliance View" {
+     [Appliance Recommendations]
+     [Appliance Consumption History]
+     [Appliance Environmental History]
+   }
+   
+   package "User" {
+     [User Login]
+     [User Registration]
+   }
+
+   package "Appliance" {
+     [Appliance Registration]
+     [Appliance Onboarding]
+     [Appliance Management]
+     [Appliance List]
+   }
+}
+
+
+
+
+
+
+
+package "Back-end" {
+  package "Device Data Generator" {
+     [Recommendation Generator]
+     [Consumption Generator]
+     [Environmental Impact Generator]
+     [Devices List]
+  }
+  
+  [User Manager]
+
+  package "Device Manager" {
+     [Integrator Manager]
+  }
+  
+  [Model Manager]
+
+  package "Network Manager" {
+    [On Demand Requests]
+    [Scheduled Requests]
+  }
+
+  database "General Database" {
+    [User Data]
+    [Device Data]
+  }
+}
+
+cloud "Country Energy Data API" {
+  [Energy Mix]
+  [Energy Mix Pollution]
+  [Energy Prices]
+}
+
+cloud "Country Appliances Data API" {
+  [Categories List]
+  [Appliances By Model Search]
+  [Appliances by Categories]
+}
+
+[Model Manager] <-- [On Demand Requests]
+[Model Manager] <-- [Scheduled Requests]
+
+[Model Manager] --> [Device Data]
+[Model Manager] --> [User Data]
+
+[On Demand Requests] -l-> [Energy Mix Pollution]
+[On Demand Requests] -l-> [Energy Mix]
+[On Demand Requests] -l-> [Categories List]
+[On Demand Requests] -l-> [Appliances By Model Search]
+[On Demand Requests] -l-> [Appliances by Categories]
+[On Demand Requests] -l-> [Categories List]
+[Scheduled Requests] -l-> [Energy Prices]
+
+
+[Recommendation Generator] <--> [On Demand Requests]
+[Consumption Generator] <--> [On Demand Requests]
+[Environmental Impact Generator] <--> [On Demand Requests]
+[User Manager] <-- [User Login]
+[User Manager] <-- [User Registration]
+[Model Manager] <--> [User Manager]
+[Model Manager] <--> [Integrator Manager]
+
+[Recommendation Generator] <-u- [Appliance Recommendations]
+[Consumption Generator] <-u- [Appliance Consumption History]
+[Environmental Impact Generator] <-u- [Appliance Environmental History]
+[Devices List] <-u- [Appliance List]
+[Integrator Manager] <-u- [Appliance Registration]
+[Integrator Manager] <-u- [Appliance Onboarding]
+[Integrator Manager] <-u-> [Appliance Management]
+
+
+
+
+
+
+
+
+
+package "Integrator Link" {
+  [Authentication Manager]
+  [Integrator Scheduler]
+  [Sync Device]
+}
+
+cloud "Device" {
+  [Get Energy Usage]
+}
+
+[Sync Device] --> [Get Energy Usage]
+[Integrator Scheduler] --> [Sync Device]
+
+database "Device Auth Tokens" {
+  [AuthTokens]
+  [DeviceAuthConfig]
+}
+
+cloud "Device Credentials Service" {
+  [GetToken]
+}
+
+[GetToken] <-- [Authentication Manager]
+[Authentication Manager] --> [AuthTokens]
+[Authentication Manager] --> [DeviceAuthConfig]
+
+[Integrator Manager] -d-> [Authentication Manager]
+[Integrator Manager] <-d-> [Integrator Scheduler]
+@enduml
