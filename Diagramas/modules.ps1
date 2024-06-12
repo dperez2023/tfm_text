@@ -4,11 +4,16 @@
 title 'Energy Efficiency: Recommender System for Appliance Usage' Architecture
 
 package "Mobile Front-End Application" {
+
+  [Push Notification Manager]
+
    package "Appliance Detail View" {
      [Appliance Recommendations]
      [Appliance Consumption History]
      [Appliance Environmental History]
    }
+
+   [Label Identifier]
    
    package "User View" {
      [User Login]
@@ -38,6 +43,7 @@ package "Back-end" {
 
   [User Manager]
   [Generator Manager]
+  [Notification Manager]
 
   package "Data Model Manager" {
     [User Model Manager]
@@ -65,6 +71,7 @@ package "Back-end" {
 
   [Generator Manager] -d-> [Energy Model Manager]
   [Generator Manager] -d-> [Device Model Manager]
+  [Generator Manager] -u-> [Notification Manager]
 }
 
 cloud "Energy Data Service" {
@@ -79,6 +86,7 @@ cloud "Appliances Data Service" {
   [Appliances by Categories]
 }
 
+[Notification Manager] -u-> [Push Notification Manager]
 [Energy Model Manager] <-- [On Demand Requests] : Data mapping from services
 [Energy Model Manager] <-- [Scheduled Requests] : '                    '
 
@@ -106,6 +114,7 @@ cloud "Appliances Data Service" {
 [Environmental Impact Generator] <-u- [Appliance Environmental History]
 [Devices List] <-u- [Appliance List]
 
+[Label Identifier] <-l- [Appliance Registration] : Appliance label identification
 [Integrator Manager] <-u- [Appliance Registration] : Device sync confirmation
 [Personalization Manager] <-u-> [Appliance Management]
 [Personalization Manager] -u-> [Device Model Manager]
@@ -118,6 +127,7 @@ cloud "Appliances Data Service" {
 [Generator Manager] -d-> [Appliances Model Manager]
 [Appliances Model Manager] -d-> [Appliance Data]
 [Appliances Model Manager] <-d- [Device Model Manager]
+[Energy Model Manager] <-d- [Device Model Manager]
 
 
 
