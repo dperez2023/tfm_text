@@ -3,58 +3,88 @@ actor Tenant
 participant "User Login" as UL
 participant "User Manager" as UM
 participant "Appliance Registration" as AO
-participant "Devices List" as DL
-participant "Integrator Manager" as IM
+participant "Appliances Generator" as DL
+participant "Device Manager" as IM
+
 participant "Integrator Scheduler" as IS
 participant "Authentication Manager" as AM
 participant "Sync Device" as SD
 participant "Device Model Manager" as DMM
 participant "Appliance Model Manager" as AMM
 
-UL -> Tenant: Display Login page
+UL -> Tenant: Display Login pag
+activate UL
 Tenant -> UL: Submit login credentials
 UL -> UM: Request credentials validation
+activate UM
 UM -> UM: validateCredentials()
 UM -> UL: Authentication successful
+deactivate UM
 UL -> AO: Redirects to devices validation
+deactivate UL
+activate AO
 AO -> DL: Request registered devices list
-DL -> DMM: getRegisteredDevices()
-DMM -> DL: Returns registered devices
+activate DL
+DL -> IM: getRegisteredDevices()
+activate IM
+IM -> IM: Generate registered devices list
+IM -> DL: Returns registered devices
+deactivate IM
 DL -> AO: Returns empty devices list
+deactivate DL
+
 AO -> Tenant: Display Application Onboarding Page
 Tenant -> AO: Submit new appliance information
-AO -> AO: updateNewAppliance()
-AO -> IM: Validate sync with appliance
+AO -> AO: Create new appliance
+AO -> IM: Validate sync with device
+activate IM
 IM -> IS: Validate device sync
+activate IS
 IS -> AM: Get Authentication token
+activate AM
 AM -> AM: Retrieve token from Service
 AM -> IS: Return authentication token
+deactivate AM
 IS -> SD: Validate sync device with token
+activate SD
 SD -> SD: Get Energy Usage from device
 SD -> IS: Confirm sync validation of device
+deactivate SD
 IS -> IM: Device synced successfully
-IM -> AO: Validation succeeded
-IM -> DMM: Save New Appliance for User
-DMM -> DMM: SaveAppliance()
+deactivate IS
+IM -> DMM: Save New Device for User
+activate DMM
+DMM -> DMM: Save Device
 DMM -> IM: Saved successfully
-IM -> AO: Appliance succesfully synced
+deactivate DMM
+IM -> AO: Validation succeeded
+deactivate IM
 AO -> Tenant: Display Label Identification Page
 Tenant -> AO: Submit appliance label
 AO -> AO: updateNewAppliance()
 AO -> Tenant: Display Confirmation Page
 Tenant -> AO: Submit confirmed information
 AO -> IM: Finalize new appliance save
-IM -> DMM: Save Appliance with complete information
-DMM -> DMM: SaveAppliance()
-DMM -> AMM: Save New Appliance
-AMM -> AMM: SaveAppliance()
-AMM -> DMM: Succesfully Saved
-DMM -> IM: Succesfully updated
+activate IM
+IM -> AMM: Save Appliance with complete information
+activate AMM
+AMM -> AMM: Save Appliance
+AMM -> IM: Succesfully saved
+deactivate AMM
+IM -> IS: Notify new device added
+activate IS
+IS -> IS: Schedule syncing for new device
+IS -> AM: Save device token
+activate AM
+AM -> AM: Save token
+AM -> IS: Return token save
+deactivate AM
+IS -> IM: Return confirmation
+deactivate IS
 IM -> AO: Notify new appliance added
-IM -> IS: Notify new appliance added
-IS -> IS: Schedule syncing for new appliance
-IS -> AM: Save appliance token
+deactivate IM
 AO -> Tenant: Display sucess message
+deactivate AO
 
 
 @enduml

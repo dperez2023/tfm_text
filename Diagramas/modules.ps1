@@ -34,15 +34,14 @@ package "Mobile Front-End Application" {
 
 
 package "Back-end" {
-  package "Device Data Generator" {
+  package "Generator Manager" {
      [Recommendation Generator]
      [Consumption Generator]
      [Environmental Impact Generator]
-     [Devices List]
+     [Appliances Generator]
   }
 
   [User Manager]
-  [Generator Manager]
   [Notification Manager]
 
   package "Data Model Manager" {
@@ -52,10 +51,7 @@ package "Back-end" {
     [Appliances Model Manager]
   }
 
-  package "Device Manager" {
-     [Integrator Manager]
-     [Personalization Manager]
-  }
+  [Device Manager]
 
   package "Network Manager" {
     [On Demand Requests]
@@ -69,9 +65,7 @@ package "Back-end" {
     [Appliance Data]
   }
 
-  [Generator Manager] -d-> [Energy Model Manager]
-  [Generator Manager] -d-> [Device Model Manager]
-  [Generator Manager] -u-> [Notification Manager]
+  [Recommendation Generator] --> [Notification Manager]
 }
 
 cloud "Energy Data Service" {
@@ -94,7 +88,6 @@ cloud "Appliances Data Service" {
 [Device Model Manager] -d-> [Device Data] : '                    '
 [User Model Manager] -d-> [User Data] : '                    '
 [User Manager] -d-> [User Model Manager]
-[User Model Manager] <-d-> [Integrator Manager]
 
 [Scheduled Requests] -l-> [Energy Mix Pollution]
 [Scheduled Requests] -l-> [Energy Mix]
@@ -107,26 +100,24 @@ cloud "Appliances Data Service" {
 
 [User Manager] <-- [User Login] : Login session 
 [User Manager] <-- [User Registration] : User registration
-[Device Model Manager] <--> [Integrator Manager] : '                    '
+[Device Model Manager] <--> [Device Manager] : '                    '
 
 [Recommendation Generator] <-u- [Appliance Recommendations]
 [Consumption Generator] <-u- [Appliance Consumption History]
 [Environmental Impact Generator] <-u- [Appliance Environmental History]
-[Devices List] <-u- [Appliance List]
+[Appliances Generator] <-u- [Appliance List]
 
 [Label Identifier] <-l- [Appliance Registration] : Appliance label identification
-[Integrator Manager] <-u- [Appliance Registration] : Device sync confirmation
-[Personalization Manager] <-u-> [Appliance Management]
-[Personalization Manager] -u-> [Device Model Manager]
+[Device Manager] <-u- [Appliance Registration] : Device sync confirmation
 
-[Recommendation Generator] -d-> [Generator Manager]
-[Consumption Generator] -d-> [Generator Manager]
-[Environmental Impact Generator] -d-> [Generator Manager]
-[Devices List] -d-> [Device Model Manager]
+[Recommendation Generator] --> [Energy Model Manager]
+[Recommendation Generator] --> [Appliances Model Manager]
+[Consumption Generator] -d-> [Energy Model Manager]
+[Environmental Impact Generator] -d-> [Energy Model Manager]
+[Appliances Generator] -d-> [Appliances Model Manager]
 
-[Generator Manager] -d-> [Appliances Model Manager]
 [Appliances Model Manager] -d-> [Appliance Data]
-[Appliances Model Manager] <-d- [Device Model Manager]
+[Appliances Model Manager] <-d- [Device Manager]
 [Energy Model Manager] <-d- [Device Model Manager]
 
 
@@ -159,7 +150,7 @@ cloud "Device Credentials Service" {
 [Authentication Manager] --> [Authentication Tokens]
 [Integrator Scheduler] --> [Devices Configuration]
 
-[Integrator Manager] <-d-> [Integrator Scheduler]
+[Device Manager] <-d-> [Integrator Scheduler]
 [Integrator Scheduler] <-d-> [Authentication Manager]
 
 [On Demand Requests] -d-> [Retrieve Token] : User validation
