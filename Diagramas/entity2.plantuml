@@ -1,0 +1,18 @@
+@startuml
+!define TABLE
+
+entity Authentication {
+  + id
+  --
+  token
+}
+
+entity Configuration {
+    + id
+    --
+    manufacturer_identifier
+    communication_protocol
+    properties
+}
+
+@enduml

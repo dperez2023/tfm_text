@@ -37,6 +37,7 @@ entity Appliance {
   name
   brand
   model
+  energy_efficiency_index
   category
   category_fields
 }

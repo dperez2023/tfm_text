@@ -1,7 +1,4 @@
 @startuml
-!theme mars
-
-title 'Energy Efficiency: Recommender System for Appliance Usage' Architecture
 
 package "Mobile Front-End Application" {
 
@@ -132,7 +129,7 @@ package "Integrator Link" {
   database "Device Database" {
   [Authentication Tokens]
   [Devices Configuration]
-}
+  }
 }
 
 cloud "Device" {

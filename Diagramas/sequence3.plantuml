@@ -1,0 +1,34 @@
+@startuml
+actor "System Timer" as Timer
+participant "Scheduled Requests" as SR
+participant "Energy Model Manager" as EMM
+participant "Energy Data Service" as EDS
+
+Timer -> SR: Notify day ended
+activate SR
+SR -> Timer: Received notification
+SR -> EMM: Get data parameters for request
+activate EMM
+EMM -> EMM: Complete request data parameters
+EMM -> SR: Send request data parameters
+deactivate EMM
+SR -> EDS: Request energy prices
+activate EDS
+EDS -> SR: Response energy prices
+deactivate EDS
+SR -> EDS: Request energy mix and pollution
+activate EDS
+EDS -> SR: Response energy mix and pollution
+deactivate EDS
+SR -> SR: Process response body
+SR -> EMM: Response body and status
+activate EMM
+EMM -> EMM: Model energy prices data for ended day
+EMM -> EMM: Model energy mix and pollution data for ended day
+EMM -> EMM: Merge energy prices, mix and pollution with energy consumption
+EMM -> EMM: Save updates
+EMM -> SR: Request proceeded successfully
+deactivate EMM
+deactivate SR
+
+@enduml
