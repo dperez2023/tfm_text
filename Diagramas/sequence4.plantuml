@@ -1,0 +1,63 @@
+@startuml
+actor "System Timer" as Timer
+participant "Device Manager" as DM
+participant "Integrator Scheduler" as IS
+participant "Device Sync" as DS
+participant "Device" as D
+participant "Authenticator Manager" as AM
+participant "Retrieve Token" as RT
+
+Timer -> IS: Notify day ended
+activate IS
+IS -> Timer: Received notification
+IS -> DS: Request energy usage with token and device configuration
+activate DS
+DS -> DS: Complete energy usage request
+activate D
+DS -> D: Get energy usage from device
+D -> DS: Return energy usage from device
+deactivate D
+
+loop until no errors && threshold of retry is reached
+alt Energy usage data returned with no errors
+    group Energy usage data returned with no errors
+        DS -> DS: Generate energy usage model map with the provided device configuration
+        DS -> IS: Return energy usage model
+    end
+
+else Energy usage data returned with errors
+     group Energy usage data returned with errors
+        DS -> DS: Generate energy usage model map with the provided device configuration
+        DS -> IS: Return energy usage model
+     end
+end
+
+end loop
+
+DS -> IS: Return energy usage data response
+
+alt Energy usage data received doesn't contain errors
+    group Energy usage data received doesn't contain errors
+        IS -> DM: Return valid model
+        deactivate IS
+    end
+
+else Energy usage data received contains errors
+     group Energy usage data received contains errors
+        IS -> AM: Request new authentication token
+        activate AM
+        AM -> AM: Get credentials to request a new token
+        AM -> RT: Request new token
+        activate RT
+        RT -> AM: Response new token
+        deactivate RT
+        AM -> AM: Save new token
+        AM -> IS: Return new authentication token
+        deactivate AM
+        IS -> DS: Request energy usage with new token and device configuration
+        DS -> DS: Repeat loop and manage responses
+     end
+end
+
+deactivate DS
+@enduml
