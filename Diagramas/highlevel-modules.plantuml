@@ -23,7 +23,7 @@ package "Integrator Link" {
    [Integrator link logic]
 }
 
-component "Device" {
+node "Device" {
   [Get Energy Usage]
 }
 
