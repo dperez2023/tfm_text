@@ -132,7 +132,7 @@ package "Integrator Link" {
   }
 }
 
-cloud "Device" {
+node "Device" {
   [Get Energy Usage]
 }
 
