@@ -1,7 +1,4 @@
 @startuml
-!theme mars
-
-title 'Energy Efficiency: Recommender System for Appliance Usage' High-level Architectural Overview
 
 package "Mobile Front-End Application" {
    [Front-end logic]
