@@ -29,26 +29,34 @@ alt Energy usage data returned with no errors
 
 else Energy usage data returned with errors
      group Energy usage data returned with errors
-        DS -> IS: Return syncing error
-        IS -> AM: Request new authentication token
-        activate AM
-        AM -> AM: Get credentials to request a new token
-        AM -> RT: Request new token
-        activate RT
-        RT -> AM: Responds new token
-        deactivate RT
-        AM -> AM: Save new token
-        AM -> IS: Return new authentication token
-        deactivate AM
-        IS -> DS: Request energy usage with token and device configuration
-        activate DS
-        DS -> DS: Complete energy usage request
-        activate D
-        DS -> D: Get energy usage from device
-        D -> DS: Return energy usage from device
-        deactivate D
-        DS -> DS: Generate energy usage model map with the provided device configuration
-        DS -> IS: Repeat loop if needed
+        alt Retry threshold reached
+            group Retry threshold reached
+                DS -> IS: Return syncing error
+             end
+        else Retry threshold not reached
+            group Retry threshold not reached
+                DS -> IS: Return retry request
+                IS -> AM: Request new authentication token
+                activate AM
+                AM -> AM: Get credentials to request a new token
+                AM -> RT: Request new token
+                 activate RT
+                RT -> AM: Responds new token
+                deactivate RT
+                AM -> AM: Save new token
+                AM -> IS: Return new authentication token
+                deactivate AM
+                IS -> DS: Request energy usage with token and device configuration
+                activate DS
+                DS -> DS: Complete energy usage request
+                activate D
+                DS -> D: Get energy usage from device
+                D -> DS: Return energy usage from device
+                deactivate D
+                DS -> DS: Generate energy usage model map with the provided device configuration
+                note left: Repeat loop if conditions are met
+            end
+        end
      end
 end
 
